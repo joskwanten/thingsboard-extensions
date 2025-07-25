@@ -1,0 +1,123 @@
+<div class="container" *ngIf="_setDevice">
+    <mat-form-field class="example-full-width">
+        <mat-label>Operating mode</mat-label>
+        <mat-select [(ngModel)]="_setDevice.modus" class="column">
+            <mat-option value="FIXED_LEVEL">Fixed level</mat-option>
+            <mat-option value="SCHEDULING">Scheduling</mat-option>
+            <mat-option value="DYNAMIC_DIMMING">Dynamic dimming</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <ng-container *ngIf="_setDevice.modus == 'FIXED_LEVEL'">
+        <div class="row">
+            <mat-label class="column">Fixed level settings</mat-label>
+            <mat-slider class="column" min="0" max="100" step="1">
+                <input matSliderThumb [(ngModel)]="_setDevice.lampBrightnessPercentage">
+            </mat-slider>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="_setDevice.modus == 'SCHEDULING' || _setDevice.modus == 'DYNAMIC_DIMMING'">
+        <div *ngFor="let schedule of _setDevice.schedules">
+            <table>
+                <tbody>
+                    <tr *ngFor="let entry of schedule.entries; let i = index">
+                        <td>
+                            <mat-form-field class="example-small-width">
+                                <mat-label>Time</mat-label>
+                                <!-- <input matInput [matTimepicker]="picker" [(ngModel)]="entry.time">
+                                <mat-timepicker-toggle matIconSuffix [for]="picker" />
+                                <mat-timepicker #picker interval="15m" /> -->
+                                <input matInput placeholder="Schedule time" value="12:00" type="time"
+                                    [(ngModel)]="entry.time">
+                            </mat-form-field>
+                        </td>
+                        <td>
+                            <mat-form-field class="example-small-width">
+                                <mat-label>Glow (%)</mat-label>
+                                <input matInput placeholder="Percentage" value="80" type="number"
+                                    [(ngModel)]="entry.glowLevel" min="0" max="100">
+                            </mat-form-field>
+                        </td>
+                        <td>
+                            <mat-form-field class="example-small-width">
+                                <mat-label>Dim (%)</mat-label>
+                                <input matInput placeholder="Percentage" value="80" type="number"
+                                    [(ngModel)]="entry.dimLevel" min="0" max="100">
+                            </mat-form-field>
+                        </td>
+                        <td class="button-td">
+                            <button (click)="schedule.entries.splice(i, 1)" matMiniFab>
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <button matMiniFab
+                (click)="schedule.entries.push({quarter: 0, time: kwartierNaarTijd(0), glowLevel: 80, dimLevel: 80})">
+                <mat-icon>add</mat-icon>
+            </button>
+            <div style="height: 16px;"></div>
+        </div>
+    </ng-container>
+    <mat-form-field class="example-full-width">
+        <mat-label>Light rate up (ms)</mat-label>
+        <input matInput placeholder="Time in ms" value="2000" type="number"
+            [(ngModel)]="_setDevice.ballast.glowTimePeriodMs" min="0" max="10000">
+    </mat-form-field>
+    <mat-form-field class="example-full-width">
+        <mat-label>Light rate down (ms)</mat-label>
+        <input matInput placeholder="Time in ms" value="2000" type="number"
+            [(ngModel)]="_setDevice.ballast.dimTimePeriodMs" min="0" max="10000">
+    </mat-form-field>
+    <mat-form-field class="example-full-width">
+        <mat-label>Fallback level (%)</mat-label>
+        <input matInput placeholder="Time in ms" value="2000" type="number" [(ngModel)]="_setDevice.fallbackLevel"
+            min="0" max="100">
+    </mat-form-field>
+    <mat-slide-toggle [(ngModel)]="_setDevice.astroClock.isActive"
+        (click)="_setDevice.alsMode.isActive = _setDevice.alsMode.isActive && !_setDevice.astroClock.isActive">Astro
+        Clock</mat-slide-toggle>
+    <div style="height: 16px;"></div>
+    <ng-container *ngIf="_setDevice.astroClock.isActive">
+        <mat-form-field class="example-full-width">
+            <mat-label>Sunrise offset (minutes)</mat-label>
+            <input matInput placeholder="Time in minutes" value="2000" type="number"
+                [(ngModel)]="_setDevice.astroClock.sunriseOffset" min="0" max="100">
+        </mat-form-field>
+        <mat-form-field class="example-full-width">
+            <mat-label>Sunset offset (minutes)</mat-label>
+            <input matInput placeholder="Time in minutes" value="2000" type="number"
+                [(ngModel)]="_setDevice.astroClock.sunsetOffset" min="0" max="100">
+        </mat-form-field>
+    </ng-container>
+    <mat-slide-toggle [(ngModel)]="_setDevice.alsMode.isActive"
+        (click)="_setDevice.astroClock.isActive = _setDevice.astroClock.isActive && !_setDevice.alsMode.isActive">Ambient
+        Light Sensor</mat-slide-toggle>
+    <div style="height: 16px;"></div>
+    <ng-container *ngIf="_setDevice.alsMode.isActive">
+        <mat-form-field class="example-full-width">
+            <mat-label>Lamp on lux level</mat-label>
+            <input matInput placeholder="Lux level" value="30" type="number" [(ngModel)]="_setDevice.alsMode.turnOnLux"
+                min="0" max="1000">
+        </mat-form-field>
+    </ng-container>
+    <mat-form-field class="example-full-width">
+        <mat-label>Hold time (s)</mat-label>
+        <input matInput placeholder="Hold time (s)" value="20" type="number" [(ngModel)]="_setDevice.holdTime" min="0"
+            max="300">
+    </mat-form-field>
+    <mat-form-field class="example-full-width">
+        <mat-label>Sensor off time (s)</mat-label>
+        <input matInput placeholder="Sensor off time (s)" value="20" type="number"
+            [(ngModel)]="_setDevice.sensorOffTime" min="0" max="300">
+    </mat-form-field>
+    <!-- <mat-form-field class="example-full-width">
+        <mat-label>GPIO Mode</mat-label>
+        <mat-select [(ngModel)]="setDevice.gpioMode" class="column">
+            <mat-option value="DISABLED">Disabled</mat-option>
+            <mat-option value="OVERRIDE_100PCT">Override to 100% mode</mat-option>
+            <mat-option value="EXTERNAL_SENSOR">External Sensor</mat-option>
+        </mat-select>
+    </mat-form-field> -->
+    <button matButton="filled" (click)="emitSetDevice()">Update</button>
+</div>

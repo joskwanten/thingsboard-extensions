@@ -31,6 +31,22 @@ import { ExampleChartComponent } from './example-chart/example-chart.component';
 import {
   ExampleChartSettingsComponent
 } from './example-chart/chart-settings/example-chart-settings.component';
+import {
+  SetDevice
+} from './set-device/set-device';
+
+import { MatButtonModule } from '@angular/material/button';
+import { FormsModule } from '@angular/forms';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+// import { MatTimepickerModule } from '@angular/material/timepicker'; // let op: deze bestaat alleen als je de @angular/material-experimental of de nieuwe MDC timepicker gebruikt
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+
 
 @NgModule({
   declarations: [
@@ -43,7 +59,8 @@ import {
     ExampleTableCustomSubscriptionComponent,
     ExampleOfUsingThirdPartyLibraryComponent,
     ExampleChartComponent,
-    ExampleChartSettingsComponent
+    ExampleChartSettingsComponent,
+    SetDevice
   ],
   imports: [
     CommonModule,
@@ -51,7 +68,19 @@ import {
     HomeComponentsModule,
     ChartModule,
     BasicWidgetConfigModule,
-    WidgetConfigComponentsModule
+    WidgetConfigComponentsModule,
+    MatButtonModule,
+    CommonModule,
+    FormsModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatSliderModule,
+    MatFormFieldModule,
+    MatInputModule,
+    // MatTimepickerModule,
+    MatIconModule,
+    MatCardModule,
+    MatSlideToggleModule
   ],
   exports: [
     ExampleTableComponent,
@@ -63,7 +92,8 @@ import {
     ExampleTableCustomSubscriptionComponent,
     ExampleOfUsingThirdPartyLibraryComponent,
     ExampleChartComponent,
-    ExampleChartSettingsComponent
+    ExampleChartSettingsComponent,
+    SetDevice
   ]
 })
 
